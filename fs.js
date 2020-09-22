@@ -8,12 +8,13 @@ console.log(path.extname(notes)); // .txt
  */
 
 
-const fs = require('fs');
-const path = require('path'); 
+/*  const fs = require('fs');
+    const path = require('path'); 
+ */
 // const fs2 = require('fs')
 // Дескриптор можно получить, воспользовавшись для открытия файла асинхронным методом open() из модуля fs:
 
-let pListdir = 'C:\MY_PROJECTS\NODE_JS\CreatePList';
+/* let pListdir = 'C:\MY_PROJECTS\NODE_JS\CreatePList';
 let pListFile = 'msclst.0'
 try {
   const files = fs.readdirSyncpList(pListdir,{ withFileTypes : true });
@@ -25,6 +26,9 @@ try {
 // Надо вывести только файлы или только папки ?
   //  })
 
+} catch (error) {
+  console.error(error)
+} */
 
 
 /*   Вот так можно получить полный путь к файлу:
@@ -47,9 +51,6 @@ fs.readdirSync(folderPath).map(fileName => {
   // Вывенсти с разделителем
   //console.log(`"` + files.join(`"\n"`) + `"`); 
 
-} catch (error) {
-    console.error(error)
-}
 
 
 // Запись в Файл

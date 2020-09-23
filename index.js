@@ -17,16 +17,24 @@ let pListFile_5 = 'msclst.5';
 let pListFile_Test = 'msclst.6';
 
 // префиксы для каждого плэйлиста пока!
-let pList_0_Prefix = [0x2f,0x00,0x00,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
+let pList_0_Prefix = [0x2f,0x00,0x00,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00]; // hexStringArray 
 let pList_1_Prefix = [0x2f,0x00,0x20,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
 let pList_2_Prefix = [0x2f,0x00,0x40,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
 let pList_3_Prefix = [0x2f,0x00,0x60,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
 let pList_4_Prefix = [0x2f,0x00,0x80,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
 let pList_5_Prefix = [0x2f,0x00,0xA0,0xb0,0x12,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00];
+let postfix_LFCR = [0x0a,0x0e]; // завершение строки 
 
 let pList_6_Prefix = '2f 00 80 b0 12 00 00 00 0c 00 00 00 00 00 00 00';
 
 const iconv = require('iconv-lite'); // тот самый конвертер
+
+// "L".charCodeAt(0) !
+
+let res1 = Buffer.from(pList_5_Prefix,'ascii');
+console.log(res1.toString());
+return;
+// let res1 = iconv.encode(iconv.decode(fdata.slice(16),'cp1251'), "utf8").toString();
 
 
 // директория и файлы треков
@@ -57,33 +65,30 @@ try {
     console.error(err)
 }    */
    
-// Пробуем сгенерить!
+// Пробуем сгенерить файл списка !
 try {
-fs.unlinkSync(pListFile_Test);
-fs.open(pListFile_Test, 'a', (err, fd /* дискриптор файла */ ) => {
-  if (err) throw err; // если ошибка - эксершен
-  // повторяем запись в файл по числу треков в папке 
-  let recFilesDir_0 = 'C:\\MY_PROJECTS\\NODE_JS\\CreatePlList\\Music\\DAR_BOGU';
-  
-      const files = fs.readdirSync(recFilesDir_0/* ,{ withFileTypes : true } */);
-      // Переберем массив файлов
-       files.forEach(file => { 
-       if (path.extname(file) == ".mp3") {
-                  console.log(file);   
-                  // let content = `"` + path.resolve(file)  + `"`;
-                  let content = iconv.decode(pList_0_Prefix,'cp866') + path.resolve(file)  + `\n`;
-                  // console.log(content); 
-
-                  fs.appendFile(fd, content,'ascii', (err) => {
-                      fs.close(fd, (err) => { if (err) throw err; });
-                      if (err) throw err;
-                      });                   
-         };    
-            })  
-   fs.close(fd,()=>{});       
-});  
-      
-} catch (error) { console.error(error);  }
+  try { fs.unlinkSync(pListFile_Test); // удалим файл 'msclst.6'
+  } catch {  };
+  fs.open(pListFile_Test, 'a', (err, fd) => {  //fd - дискриптор файла */
+    if (err) throw err; // если ошибка - эксершен
+    // повторяем запись в файл по числу треков в папке 
+    let recFilesDir_0 = 'C:\\MY_PROJECTS\\NODE_JS\\CreatePlList\\Music\\DAR_BOGU';
+    // чтение каталога файлов
+    const files = fs.readdirSync(recFilesDir_0/* ,{ withFileTypes : true } */);
+    // Переберем массив имен файлов 
+    files.forEach( (file,index) => { 
+            if (path.extname(file) == ".mp3" && index == 0) {
+                    // console.log(file);   
+                    // let content = `"` + path.resolve(file)  + `"`;
+                    let content = iconv.decode(pList_0_Prefix,'cp866') + iconv.decode(path.resolve(file),'cp866') + iconv.decode(postfix_LFCR,'cp866');
+                    console.log(content); 
+                    fs.appendFileSync(fd, content,'ascii');
+            } // end if    
+          })
+      fs.closeSync(fd);   
+  });  
+        
+  } catch (error) { console.error(error);  }
 
 /* let content = pList_0_Prefix ; // это массив!
 fs.writeFile(pListFile_Test, content, (err) => {
@@ -96,8 +101,8 @@ fs.writeFile(pListFile_Test, content, (err) => {
   });
  */
 
- console.log(iconv.decode(pList_0_Prefix,'cp866'));
- console.log(iconv.decode(pList_2_Prefix,'cp866'));
+ // console.log(iconv.decode(pList_0_Prefix,'cp866'));
+ // console.log(iconv.decode(pList_2_Prefix,'cp866'));
  // console.log(iconv.decode(pList_0_Prefix,'utf8'));
    // const ab = new ArrayBuffer(10);
    // const buf = Buffer.from(ab, 0, 2);
@@ -121,18 +126,6 @@ fs.writeFile(pListFile_Test, content, (err) => {
 
 
 
-/* 
-
- */
-
-
-
-
-/*   Вот так можно получить полный путь к файлу:
-  fs.readdirSync(folderPath).map(fileName => {
-    return path.join(folderPath, fileName)
-  }
- */
 
 /* Результаты можно отфильтровать для того, чтобы получить только файлы и исключить из вывода директории:
 const isFile = fileName => {

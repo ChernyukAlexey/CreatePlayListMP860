@@ -31,6 +31,37 @@ try {
 } */
 
 
+/* Line-Reader
+
+After a detailed explanation of how you could read a file line-by-line using the native Node.js module, let's take a look at a shorter version of
+ it using the open-source line-reader module from npm.
+
+As it's a non-native module, we need to make sure we have initialized the npm project in a proper way with npm init and then install it:
+
+$ npm install --save line-reader
+
+This will install the dependency and add it to the package.json file.
+
+Once it's done, reading a file line-by-line is similar to the previous example only without creating a readInterface in the middle:
+
+const lineReader = require('line-reader');
+
+lineReader.eachLine('/path/to/file', function(line) {
+    console.log(line);
+});
+
+A quite useful feature here is to stop reading when some condition turns true. This is achieved by simply returning false from the callback function.
+
+For example, we could read a file line by line until we find a line that has the word "STOP" in it:
+
+lineReader.eachLine('path/to/file', function(line) {
+    console.log(line);
+    if (line.includes('STOP') {
+        return false; // stop reading
+    }
+});
+ */
+
 /*   Вот так можно получить полный путь к файлу:
   fs.readdirSync(folderPath).map(fileName => {
     return path.join(folderPath, fileName)

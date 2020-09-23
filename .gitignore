@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 node_modules/
 Music/
 .vscode/
 *.log
+=======
+/music
+/node_modules
+*.zip
+>>>>>>> origin/master
